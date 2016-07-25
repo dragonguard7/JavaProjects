@@ -1,0 +1,24 @@
+this is the second test file for
+CNT 4714 - Summer 2012 - Project #2
+1
+2
+3
+4
+5
+Going to make more
+sentences to take up space to show that the display area is scrollable both vertically
+and
+horizontally.
+Not
+sure
+how
+much
+more
+I
+need
+to
+make
+it
+scroll...
+...
+...
