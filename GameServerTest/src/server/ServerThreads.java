@@ -2,14 +2,13 @@ package server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 
 import ClientServer.ClientServerMessage;
+import database.DatabaseManager;
+import database.dbResultSet;
 
 
 public class ServerThreads implements Runnable{
@@ -68,9 +67,10 @@ public class ServerThreads implements Runnable{
 				
 				case ClientServerMessage.LOGIN:
 					displayMessage("Client trying to login in with: " + csm.getMessage());
-
+					validateLogin(csm.getMessage());
+					break;
 				case ClientServerMessage.MESSAGE:
-					displayMessage("Client" + id  + " : " + message);
+					displayMessage("Client message " + id  + " : " + message);
 					break;
 				case ClientServerMessage.LOGOUT:
 					displayMessage("Client" + id  + " logged out.");
@@ -103,7 +103,7 @@ public class ServerThreads implements Runnable{
 		catch (Exception e) {}
 	}
 	
-	private boolean writeMsg(String msg) {
+	private boolean writeMessage(String msg) {
 		// if Client is still connected send the message to it
 		if(!socket.isConnected()) {
 			close();
@@ -121,5 +121,32 @@ public class ServerThreads implements Runnable{
 		return true;
 	}
 
+	private void validateLogin(String UNPW){
+		String[] tokens = csm.getMessage().split("[/]+");
+		System.out.println(tokens[0] +" " + tokens[1]);
+		String query = "Select * from users where userName = \"" + tokens[0] + "\"";
+		System.out.println(query);
+		DatabaseManager dbQuery = new DatabaseManager(query);
+		dbResultSet queryResult = dbQuery.query(query);
+		System.out.println("Num rows: " + queryResult.getRowCount());
+		
+		if(queryResult.getRowCount() == 0){
+			displayMessage(tokens[0] + " is NOT a valid userName");
+			writeMessage("Invalid Username");
+			return;
+		}else{
+			displayMessage(tokens[0] + " is a valid userName!");
+			query = "Select * from users where password = \"" + tokens[1] + "\"";
+			queryResult = dbQuery.query(query);
+			if(queryResult.getRowCount() == 0){
+				writeMessage("Invalid password");
+				return;
+			}else{
+				userName = tokens[0];
+				writeMessage("You have been successfully logged in, " + userName);
+			}
+			return;
+		}
+	}
 
 }

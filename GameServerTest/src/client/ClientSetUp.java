@@ -77,8 +77,8 @@ private String recieveData() {
 	    }catch(Exception ec) {
 			displayMessage("Error connectiong to server:" + ec);
 		}
-	   	clientGUI.displayArea.append( "Connected to: " + client.getInetAddress().getHostName() + "\n");
-	   	clientGUI.displayArea.append("Setting up Client I/O Streams...\n");			
+	   	displayMessage( "Connected to: " + client.getInetAddress().getHostName() + "\n");
+	   	//clientGUI.displayArea.append("Setting up Client I/O Streams...\n");			
 	   
 		try{
 			sInput  = new ObjectInputStream(client.getInputStream());
@@ -125,7 +125,7 @@ private String recieveData() {
    {
       try // send object to server
       {
-    	 displayMessage("Trying to send data... " + message.getMessage() + "\n") ;
+    	 //displayMessage("Trying to send data... " + message.getMessage() + "\n") ;
     	 sOutput.writeObject(message);
       } // end try
       catch ( IOException ioException )

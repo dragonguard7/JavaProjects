@@ -53,9 +53,7 @@ public class dbResultSet extends AbstractTableModel
 
       // set query and execute it
       setQuery( query );
-		
-		//set update and execute it
-		//setUpdate (query);
+
    } // end constructor ResultSetTableModel
 
    // get class that represents column type

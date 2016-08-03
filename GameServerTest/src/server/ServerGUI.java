@@ -25,7 +25,7 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener
 	JLabel serverStatus = new JLabel("On");
 	JTextArea displayArea; // display information to user
 	ServerSetUp server;
-    DatabaseManager DBM = null;
+    protected DatabaseManager DBM = null;
    
 
    // set up GUI

@@ -25,39 +25,56 @@ public class DatabaseManager extends JFrame{
 	
 	   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	   static final String DATABASE_URL = "jdbc:mysql://localhost:3306/gameusers";
-	   
-	   // static final  BorderLayout layout = new BorderLayout(10,10);
 	   static final String USERNAME = "root";
 	   static final String PASSWORD= "root";
 	   
 	// default query retrieves all data from bikes table
-	   static final String DEFAULT_QUERY = "SELECT * FROM users";
+	   private String DEFAULT_QUERY = "SELECT * FROM users";
 	   
 	   private dbResultSet tableModel;
 	   private JScrollPane result;
 	   
 	   private JTextArea queryArea;
-	   //private JLabel DriverLabel = new JLabel("JDBC Driver");
-	   //private JLabel DBLabel= new JLabel("Database URL");
-	   //private JLabel UserLabel= new JLabel("Username");
-	   //private JLabel PWLabel= new JLabel("Password");
 	   private JLabel exe = new JLabel("SQL Execution Result");
-	   //private JTextField DriverField = new JTextField(JDBC_DRIVER, 15);
-	   //private JTextField DBField= new JTextField(DATABASE_URL, 15);
-	   //private JTextField UserField= new JTextField(15);
-	   //private JTextField PWField= new JTextField(15);
 	   private JTextArea filler = new JTextArea(24,70);
 	   private JLabel commandLabel = new JLabel("Enter a SQL Command");
-	   //private JLabel connection = new JLabel("No Connection Now");
 	   private JButton submitButton = new JButton( "Submit Query" );
-	   //private JButton connect = new JButton( "Connect");
 	   private JButton clearCommand = new JButton( "Clear Command" );
 	   private JButton clearResult = new JButton("Clear Result");
 	   
 	   private char[] string;
 	   
+	   public DatabaseManager(){
+		   dbGUI();
+	   }
+	   public DatabaseManager(String query){
+		   //DEFAULT_QUERY = query;
+		   //dbGUI();
+		   query(query);
+	   }
+	   public dbResultSet query(String query){
+			   
+			   try{
+					tableModel = new dbResultSet( JDBC_DRIVER, DATABASE_URL, USERNAME, PASSWORD, query );
+	
+					}//end try
+					catch ( ClassNotFoundException classNotFound ) 
+				      {
+						System.out.println("Driver not found");
+				      } // end catch
+				      catch ( SQLException sqlException ) 
+				      {
+				         System.out.println("Database error");
+				               
+				         // ensure database connection is closed
+				         tableModel.disconnectFromDatabase();
+				      } // end catch
+			   
+			   return tableModel;
+	}
+
 	   // create ResultSetTableModel and GUI
-	   public DatabaseManager() 
+	   private void dbGUI() 
 	   {   
 		  //this.setLayout(new GridLayout(2,1,20,10));
 		   this.setLayout(new BorderLayout());
@@ -65,9 +82,7 @@ public class DatabaseManager extends JFrame{
 	       setSize( 850, 700 ); // set window size
 	       setVisible( true ); // display window 
 	      
-	       
-	      
-	      //JPanel p1 = new JPanel();
+
 	      JPanel p2 = new JPanel();
 	      JPanel commandLayout = new JPanel();
 
@@ -76,7 +91,6 @@ public class DatabaseManager extends JFrame{
 	      JPanel centerP2 = new JPanel();
 	      final JPanel south = new JPanel();
 	      
-	      //p1.setLayout(new GridLayout(5,2,5,5));
 	      p2.setLayout(new GridLayout(1,1,5,5));
 	      commandLayout.setLayout(new GridLayout(4,1,5,5));
 	      centerP1.setLayout(new FlowLayout());
@@ -84,16 +98,8 @@ public class DatabaseManager extends JFrame{
 	      center.setLayout(new GridLayout(2,1,5,5));
 	      
 	      filler.setBackground(Color.LIGHT_GRAY);
-	      south.setLayout(new FlowLayout());//GridLayout(1,1,5,5));
+	      south.setLayout(new FlowLayout());
 
-	      
-	      //p1.add(DriverLabel); p1.add(DriverField); p1.add(DBLabel); p1.add(DBField); 
-	      //p1.add(UserLabel); p1.add(UserField); p1.add(PWLabel); p1.add(PWField);
-	      
-	      
-	      //DriverField.setEditable(false);
-	      //DBField.setEditable(false);
-	      //UserField.setText(USERNAME);
 	      
 	         queryArea = new JTextArea( "", 3, 100 );
 	         queryArea.setWrapStyleWord( true );
@@ -109,9 +115,6 @@ public class DatabaseManager extends JFrame{
 	         commandLayout.add(commandLabel);
 	         commandLayout.add(scrollPane);
 	         	         
-	         
-	      //p1.add(connection);
-	      //p1.add(connect);
 	      centerP1.add(clearCommand);
 	      centerP1.add(submitButton);
 	      commandLayout.add(centerP1);
@@ -127,16 +130,9 @@ public class DatabaseManager extends JFrame{
 	      try{
 			tableModel = new dbResultSet( JDBC_DRIVER, DATABASE_URL, USERNAME, PASSWORD, DEFAULT_QUERY );
 			
-	         // create JTable delegate for tableModel 
 	         JTable resultTable = new JTable( tableModel );
 	         result = new JScrollPane( resultTable );
-	         // place GUI components on content pane
-	         
-			//if(tableModel.getConnection()){
-				//connection.setText(DATABASE_URL);
-			//}
-			//south.add(result, BorderLayout.SOUTH);
-			
+
 			}//end try
 			catch ( ClassNotFoundException classNotFound ) 
 		      {
@@ -176,8 +172,7 @@ public class DatabaseManager extends JFrame{
                 south.revalidate();
 
        	 }
-            //south.add(new JScrollPane( resultTable ), BorderLayout.SOUTH);
-            
+           
          } // end try
          catch ( SQLException sqlException ){
             JOptionPane.showMessageDialog( null, 
@@ -211,7 +206,7 @@ public class DatabaseManager extends JFrame{
 	            	   
 	            	   
 	            	   string = (queryArea.getText()).toCharArray();
-	            	   System.out.println(string[0]);
+	            	   //System.out.println(string[0]);
 	                  // perform a new query
 	                  try{
 	                	  
@@ -261,10 +256,6 @@ public class DatabaseManager extends JFrame{
 	               } // end actionPerformed
 	            }  // end ActionListener inner class          
 	         ); // end call to addActionListener
-	 
-   
-	      // dispose of window when user quits application (this overrides
-	      // the default of HIDE_ON_CLOSE)
 	      
 	      // ensure database connection is closed when user quits application
 	      addWindowListener(
@@ -303,6 +294,5 @@ public class DatabaseManager extends JFrame{
 	      
 	      
 	   } // end DisplayQueryResults constructor
-
 
 }
