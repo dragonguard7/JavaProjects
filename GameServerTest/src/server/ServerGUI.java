@@ -14,14 +14,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import database.DatabaseManager;
+
 public class ServerGUI extends JFrame implements ActionListener, WindowListener
 {
 	
 	private static final long serialVersionUID = 1L;
 	JButton serverSS = new JButton("Server On/Off"); // inputs message from user
+	JButton showUsers = new JButton("Show database users");
 	JLabel serverStatus = new JLabel("On");
 	JTextArea displayArea; // display information to user
 	ServerSetUp server;
+    DatabaseManager DBM = null;
    
 
    // set up GUI
@@ -30,21 +34,24 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener
       super( "Game Server" );
       this.server = server;
       serverSS.addActionListener(this);
+      showUsers.addActionListener(this);
       JPanel p1 = new JPanel();
       serverStatus.setAlignmentY(CENTER_ALIGNMENT);
       p1.setLayout(new GridLayout(1,2));
       p1.add( serverSS, BorderLayout.NORTH );
       p1.add(serverStatus, BorderLayout.CENTER);
       
-      add(p1, BorderLayout.NORTH);
+      this.add(p1, BorderLayout.NORTH);
       
       displayArea = new JTextArea(); // create displayArea
-      add( new JScrollPane( displayArea ), BorderLayout.CENTER );
-      displayArea.setEditable(false);
-      setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-
-      setSize( 325, 400 ); // set size of window
-      setVisible( true ); // show window
+      this.add( new JScrollPane( displayArea ), BorderLayout.CENTER );
+      this.add(showUsers, BorderLayout.SOUTH);
+      
+      displayArea.setEditable(false);     
+     
+      this.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+      this.setSize( 325, 400 ); // set size of window
+      this.setVisible( true ); // show window
    } // end Server GUI constructor
 
 
@@ -64,12 +71,22 @@ public void windowOpened(WindowEvent arg0) {}
 
 
 @Override
-public void actionPerformed(ActionEvent arg0) {
-	server.serverUp = !server.serverUp;
-	if(server.serverUp){
-		serverStatus.setText( "On" );
-	}else{
-		serverStatus.setText( "Off" );
+public void actionPerformed(ActionEvent action) {
+	Object o = action.getSource();
+	
+	if(o == serverSS){
+		server.serverUp = !server.serverUp;
+		if(server.serverUp){
+			serverStatus.setText( "On" );
+		}else{
+			serverStatus.setText( "Off" );
+		}
+	}
+	
+	if(o == showUsers){
+	      if(DBM == null){
+	    	  new DatabaseManager();  
+	      }
 	}
 }
 } 

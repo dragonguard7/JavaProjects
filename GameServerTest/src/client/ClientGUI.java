@@ -104,8 +104,8 @@ public class ClientGUI extends JFrame implements ActionListener, WindowListener
 		if(o == login){
 			String UN = userName.getText().trim();
 			String PW = password.getText().trim();
-			client.sendMessage(new ClientServerMessage(ClientServerMessage.MESSAGE, UN ));
-			client.sendMessage(new ClientServerMessage(ClientServerMessage.MESSAGE, PW));
+			client.sendMessage(new ClientServerMessage(ClientServerMessage.LOGIN, UN + "/" + PW ));
+			//client.sendMessage(new ClientServerMessage(ClientServerMessage.LOGIN, PW));
 
 		}
 		

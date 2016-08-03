@@ -49,8 +49,6 @@ public class ClientSetUp
 		
 		System.out.println("Exit client loop");	
 	
-					   
-				//}
    }
 
 private String recieveData() {
@@ -93,7 +91,7 @@ private String recieveData() {
 		new ListenFromServer().start();
 
 		//send initial message to server if desired
-		sendMessage(new ClientServerMessage(ClientServerMessage.MESSAGE, "Test1"));
+		//sendMessage(new ClientServerMessage(ClientServerMessage.MESSAGE, "Test1"));
 
    } // end method connectToServer
 

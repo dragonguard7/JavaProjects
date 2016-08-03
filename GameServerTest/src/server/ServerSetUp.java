@@ -56,9 +56,9 @@ public class ServerSetUp implements Runnable
 	      } catch (IOException e){
 	          throw new RuntimeException("Cannot open port " + serverPort,e);
 	      } // end catch
-	   
+	   	 displayMessage( "Waiting for connection..." );
 	   while(isServerUp()){
-		   displayMessage( "Waiting for connection" );
+		   
 		   Socket clientSocket = null;		   
 		   try{
 			   clientSocket = this.server.accept();
@@ -72,7 +72,7 @@ public class ServerSetUp implements Runnable
 		   
 	//End server's job. Create a new Thread to handle client connection.
 		   new Thread(new ServerThreads(clientSocket,serverGUI)).start();
-		   
+
 	   }
 	   serverGUI.displayArea.append("Server Stopped\n");
 	   System.out.println("Server Stopped.");

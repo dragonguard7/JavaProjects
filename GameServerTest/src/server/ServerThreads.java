@@ -17,8 +17,6 @@ public class ServerThreads implements Runnable{
 	protected Socket socket;
 	protected ServerGUI serverGUI;
 	boolean disconnected = false;
-//	OutputStream output; // output stream to client
-//	InputStream input; // input stream from client
 	ObjectInputStream sInput;
 	ObjectOutputStream sOutput;
 	BufferedReader buffRead;
@@ -36,8 +34,9 @@ public class ServerThreads implements Runnable{
 	
 	public void run(){
 
-		   serverGUI.displayArea.append("Client: " + id + " " + socket.getInetAddress().toString() + " connected.\n");
-		   System.out.println("Setting up I/O Streams");
+			displayMessage("Client: " + id + " " + socket.getInetAddress().toString() + " connected.\n");
+		   displayMessage( "Waiting for connection..." );
+		   //System.out.println("Setting up I/O Streams");
 		   //while(!disconnected){
 		   try{
 			
@@ -66,6 +65,9 @@ public class ServerThreads implements Runnable{
 			   String message = csm.getMessage();
 			   
 				switch(csm.getType()) {
+				
+				case ClientServerMessage.LOGIN:
+					displayMessage("Client trying to login in with: " + csm.getMessage());
 
 				case ClientServerMessage.MESSAGE:
 					displayMessage("Client" + id  + " : " + message);
