@@ -18,7 +18,7 @@ public class ClientSetUp
    private ObjectOutputStream sOutput; // output stream to server
    private ObjectInputStream sInput; // input stream from server
    private Socket client; // socket to communicate with server
-   private int port = 12345;
+   private int port = 36;
    private String userName, password;
    
    
@@ -72,7 +72,8 @@ private String recieveData() {
 		    System.out.println("Connecting to Server...");
 		    client = new Socket(chatServer , port );		
 		    // display connection information
-
+		    client.getInetAddress();
+		    
 			setTextFieldEditable( true );
 	    }catch(Exception ec) {
 			displayMessage("Error connectiong to server:" + ec);
@@ -163,8 +164,12 @@ private String recieveData() {
       ClientSetUp application; // declare client application
 
       // if no command line args
-      if ( args.length == 0 )
-         application = new ClientSetUp( "127.0.0.1" ); // connect to localhost
+      if ( args.length == 0 ){
+         //application = new ClientSetUp( "127.0.0.1" ); // connect to localhost
+      	 //application = new ClientSetUp( "192.168.2.10" ); // connect to localhost
+           application = new ClientSetUp( "45.72.193.16" ); // connect to localhost
+
+      }
       else
          application = new ClientSetUp( args[ 0 ] ); // use args to connect
 

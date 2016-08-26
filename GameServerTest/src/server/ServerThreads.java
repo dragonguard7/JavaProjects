@@ -123,7 +123,12 @@ public class ServerThreads implements Runnable{
 
 	private void validateLogin(String UNPW){
 		String[] tokens = csm.getMessage().split("[/]+");
+		if(tokens.length != 2){
+			writeMessage("Invalid login");
+			return;
+		}
 		System.out.println(tokens[0] +" " + tokens[1]);
+
 		String query = "Select * from users where userName = \"" + tokens[0] + "\"";
 		System.out.println(query);
 		DatabaseManager dbQuery = new DatabaseManager(query);
