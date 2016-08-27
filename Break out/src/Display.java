@@ -1,9 +1,11 @@
 import java.awt.GridLayout;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 public class Display{
@@ -13,8 +15,10 @@ public class Display{
 	
 	//Menu
 	JButton start;
-	private JLabel difficultyL, numRowsL;
-	JTextField difficulty = new JTextField(5), numRows = new JTextField(5);
+	private JLabel ballSpeedL, numRowsL, playerSizeL;
+	JTextField ballSpeed = new JTextField(5), numRows = new JTextField(5);
+	ButtonGroup playerSize;
+	JRadioButton small, medium, large;
 	private JPanel layout;
 	
 	public Display(){
@@ -27,28 +31,46 @@ public class Display{
 	}
 
 	public void startMenu(GameDriver gameDriver){
+				
+		layout = new JPanel(new GridLayout(7,1));
+		small = new JRadioButton("Small");
+		medium = new JRadioButton("Medium");
+		large = new JRadioButton("Large");
+		playerSize = new ButtonGroup();
+		JPanel radioPanel = new JPanel(new GridLayout(1,3));
+		
+		playerSize.add(small);
+		playerSize.add(medium);
+		playerSize.add(large);
+		radioPanel.add(small);
+		radioPanel.add(medium);
+		radioPanel.add(large);
+		medium.setSelected(true);
 		
 		start = new JButton("Start");
 		
 		frame.addKeyListener(gameDriver);
 		start.addActionListener(gameDriver);
+
 		
-		layout = new JPanel(new GridLayout(5,1));
 		
-		
-		difficultyL = new JLabel("Select difficulty: 0-easy, 5-hard");
-		
+		ballSpeedL = new JLabel("Select ball speed: 0-slow, 5-fast");
 		numRowsL = new JLabel("Select number of rows between 1 and 5");
+		playerSizeL = new JLabel("Select player size: small, medium, large");
 		
 		numRows.setText("3");
-		difficulty.setText("1");
+		ballSpeed.setText("2");
 
 		layout.add(numRowsL);
 		layout.add(numRows);
-		layout.add(difficultyL);
-		layout.add(difficulty);
+		layout.add(ballSpeedL);
+		layout.add(ballSpeed);
+		layout.add(playerSizeL);
+		layout.add(radioPanel);
 		layout.add(start);
+		
 		frame.add(layout);
+		
 		frame.setVisible( true ); // display window 
 	}
 	

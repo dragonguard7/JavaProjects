@@ -17,7 +17,7 @@ public class GameDriver implements Runnable, KeyListener, ActionListener{
 	private boolean running = false;
 	private int FPS = 60;
 	private Graphics g;
-	private float gameSpeed = 1;
+	private float ballSpeed = 2;
 	private Brick player;
 	//0 - Menu, 1 - Game, 2 - Ending
 	private int stateID = 0;
@@ -81,8 +81,7 @@ public class GameDriver implements Runnable, KeyListener, ActionListener{
 		start();
 		Random rand = new Random();
 		gameDisplay.getFrame().requestFocus();
-		gameBall = new Ball(gameDisplay, (float)(rand.nextInt(3 - 1 + 1) + 1)* gameSpeed, -(float)(rand.nextInt(6-3+1)+ 3)* gameSpeed);
-		player = new Brick(gameDisplay.getWidth()/2, gameDisplay.getHeight()-50, 60);
+		gameBall = new Ball(gameDisplay, (float)(rand.nextInt(2 - 1 + 1) + 1)* ballSpeed, -(float)(rand.nextInt(4-2+1)+ 2)* ballSpeed);
 		brickManager.generateBricks();
 		
 		g = gameDisplay.getFrame().getGraphics();
@@ -170,6 +169,8 @@ public class GameDriver implements Runnable, KeyListener, ActionListener{
 		// TODO Auto-generated method stub
 		Object o = e.getSource();
 		if(o == gameDisplay.start){
+			
+			//Number of rows
 			if(!gameDisplay.numRows.getText().equals("")){
 				int numRows = Integer.parseInt(gameDisplay.numRows.getText());
 				if(numRows < 6 && numRows > 0){
@@ -183,6 +184,37 @@ public class GameDriver implements Runnable, KeyListener, ActionListener{
 				System.out.println("It's null. Default 3");
 				brickManager.setNumBrickRow(3);
 			}
+			
+			//Ball Speed
+			if(!gameDisplay.ballSpeed.getText().equals("")){
+				int ballS = Integer.parseInt(gameDisplay.ballSpeed.getText());
+				if(ballS < 6 && ballS > 0){
+					System.out.println("Correct input. Value: " + ballS);
+					ballSpeed = ballS/2 + .5f;
+				}else{
+					System.out.println("ballSpeed Not null but not correct input. Default 1");
+					brickManager.setNumBrickRow(3);
+				}
+			}else{
+				System.out.println("ballSpeed It's null. Default 1");
+				brickManager.setNumBrickRow(3);
+			}
+			
+			//Player size
+			if(gameDisplay.small.isSelected()){
+				System.out.println("Small");
+				player = new Brick(gameDisplay.getWidth()/2, gameDisplay.getHeight()-50, 40);
+
+			}else if(gameDisplay.large.isSelected()){
+				System.out.println("Large");
+				player = new Brick(gameDisplay.getWidth()/2, gameDisplay.getHeight()-50, 80);
+
+			}else{
+				System.out.println("Medium, default");
+				player = new Brick(gameDisplay.getWidth()/2, gameDisplay.getHeight()-50, 60);
+
+			}
+			
 
 			gameDisplay.getFrame().removeAll();
 			gameDisplay.getFrame().revalidate();

@@ -27,9 +27,9 @@ public class Ball {
 			xSpeed = -xSpeed;
 			x = gameDisplay.getWidth() - radius;
 		}
-		if(y < 0){
+		if(y < 20){
 			ySpeed = -ySpeed;
-			y = 0;
+			y = 20;
 		}else if(y + radius > gameDisplay.getHeight()){
 			//This is game over
 			ySpeed = -ySpeed;
