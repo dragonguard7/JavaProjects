@@ -6,17 +6,16 @@ import java.util.Iterator;
 public class BrickManager {
 
 	private Display gameDisplay;
+	private int numBrickRow = 2;
 	ArrayList<Brick> bricks;
 	
 	public BrickManager(Display gameDisplay){
 		this.gameDisplay = gameDisplay;
 		bricks = new ArrayList<Brick>();
-		generateBricks();
 	}
 	
-	private void generateBricks(){
+	public void generateBricks(){
 		int brickSpace = 6;
-		int numBrickRow = 2;
 		int numBrickCol = gameDisplay.getWidth() / (Brick.width + brickSpace);
 		int brickY = 30, brickX = (gameDisplay.getWidth() - numBrickCol * (Brick.width + brickSpace))/2;
 		
@@ -31,12 +30,6 @@ public class BrickManager {
 		}
 		
 		System.out.println(numBrickCol + " " + (gameDisplay.getWidth() - numBrickCol * (Brick.width +2)));
-		/*
-		bricks.add(new Brick(30,gameDisplay.getHeight()/2));
-		bricks.add(new Brick(gameDisplay.getWidth()/2,30));
-		bricks.add(new Brick(gameDisplay.getWidth()-50,gameDisplay.getHeight()/2));
-		bricks.add(new Brick(gameDisplay.getWidth()/2,gameDisplay.getHeight()-20));
-		*/
 		System.out.println("Generated bricks");
 	}
 	
@@ -55,6 +48,10 @@ public class BrickManager {
 			b.render(g);
 
 		}
+	}
+
+	public void setNumBrickRow(int numBrickRow) {
+		this.numBrickRow = numBrickRow;
 	}
 	
 }

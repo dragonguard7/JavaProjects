@@ -26,7 +26,7 @@ public class GameDriver implements Runnable, KeyListener, ActionListener{
 	
 	public GameDriver(){
 		gameDisplay = new Display();
-		
+		brickManager = new BrickManager(gameDisplay);
 		//startGame();
 		gameDisplay.startMenu(this);
 	}
@@ -83,7 +83,7 @@ public class GameDriver implements Runnable, KeyListener, ActionListener{
 		gameDisplay.getFrame().requestFocus();
 		gameBall = new Ball(gameDisplay, (float)(rand.nextInt(3 - 1 + 1) + 1)* gameSpeed, -(float)(rand.nextInt(6-3+1)+ 3)* gameSpeed);
 		player = new Brick(gameDisplay.getWidth()/2, gameDisplay.getHeight()-50, 60);
-		brickManager = new BrickManager(gameDisplay);
+		brickManager.generateBricks();
 		
 		g = gameDisplay.getFrame().getGraphics();
 	}
@@ -93,6 +93,7 @@ public class GameDriver implements Runnable, KeyListener, ActionListener{
 		gameBall.render(g);
 		brickManager.render(g);
 		player.render(g);
+		
 		if(brickManager.bricks.isEmpty()){
 			running = false;
 			g.clearRect(0, 0, gameDisplay.getWidth(), gameDisplay.getHeight());
@@ -169,7 +170,21 @@ public class GameDriver implements Runnable, KeyListener, ActionListener{
 		// TODO Auto-generated method stub
 		Object o = e.getSource();
 		if(o == gameDisplay.start){
-			gameDisplay.getFrame().remove(gameDisplay.start);
+			if(!gameDisplay.numRows.getText().equals("")){
+				int numRows = Integer.parseInt(gameDisplay.numRows.getText());
+				if(numRows < 6 && numRows > 0){
+					System.out.println("Correct input. Value: " + numRows);
+					brickManager.setNumBrickRow(numRows);
+				}else{
+					System.out.println("Not null but not correct input. Default 3");
+					brickManager.setNumBrickRow(3);
+				}
+			}else{
+				System.out.println("It's null. Default 3");
+				brickManager.setNumBrickRow(3);
+			}
+
+			gameDisplay.getFrame().removeAll();
 			gameDisplay.getFrame().revalidate();
 			startGame();
 		}

@@ -31,6 +31,7 @@ public class Ball {
 			ySpeed = -ySpeed;
 			y = 0;
 		}else if(y + radius > gameDisplay.getHeight()){
+			//This is game over
 			ySpeed = -ySpeed;
 			y = gameDisplay.getHeight() - radius;
 		}
@@ -41,7 +42,7 @@ public class Ball {
 		g.setColor(Color.blue);
 		//g.fillArc((int)x, (int)y, (int)radius, (int)radius, 0, 360);
 		g.fillOval((int)x, (int)y, (int)radius, (int)radius);
-		g.drawRect((int)(x), (int)(y), (int)(radius), (int)(radius));
+		//g.drawRect((int)(x), (int)(y), (int)(radius), (int)(radius));
 	}
 	
 	public Rectangle getBounds(){

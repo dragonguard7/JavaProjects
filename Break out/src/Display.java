@@ -1,3 +1,5 @@
+import java.awt.GridLayout;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -12,7 +14,7 @@ public class Display{
 	//Menu
 	JButton start;
 	private JLabel difficultyL, numRowsL;
-	private JTextField difficulty, numRows;
+	JTextField difficulty = new JTextField(5), numRows = new JTextField(5);
 	private JPanel layout;
 	
 	public Display(){
@@ -22,7 +24,6 @@ public class Display{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Need to end the game if closed by X 
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
-		frame.setVisible( true ); // display window 
 	}
 
 	public void startMenu(GameDriver gameDriver){
@@ -31,26 +32,24 @@ public class Display{
 		
 		frame.addKeyListener(gameDriver);
 		start.addActionListener(gameDriver);
-		/*
-		layout = new JPanel(new GridLayout(3,2));
 		
-				
-
+		layout = new JPanel(new GridLayout(5,1));
+		
 		
 		difficultyL = new JLabel("Select difficulty: 0-easy, 5-hard");
 		
 		numRowsL = new JLabel("Select number of rows between 1 and 5");
-		difficulty = new JTextField("3");
-		numRows = new JTextField();
-
 		
+		numRows.setText("3");
+		difficulty.setText("1");
+
+		layout.add(numRowsL);
+		layout.add(numRows);
 		layout.add(difficultyL);
 		layout.add(difficulty);
-		layout.add(numRowsL);	
-		layout.add(numRows);
-	 */
-		frame.add(start);
-		
+		layout.add(start);
+		frame.add(layout);
+		frame.setVisible( true ); // display window 
 	}
 	
 	
