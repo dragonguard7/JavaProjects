@@ -1,42 +1,98 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class GameDriver extends JPanel {
 
-	private int numRows = 5, numCols = 5, numWalls = 7;
+	private int numRows = 5, numCols = 5, numWalls = 8;
 	private int rowSize = 100, colSize = 100, width, height;
 	private Display display;
 	private Block blockArray[][];
-	private Graphics g;
+	private Graphics graphics;
 	private static JFrame frame;
 	private ArrayList<Block> blocks;
 	private boolean intruderFound;
+	private BufferStrategy bs;
+	private Thread graphicsThread;
+	private Queue<Block> breathSearch;
 	
 	public GameDriver(){
 		
 		width = numRows * rowSize + 7;
 		height = numCols * colSize + 30;
 		
+		display = new Display(width,height);
 		
-		frame.setSize(width, height);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false);
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
+		frame = display.getFrame();
+		frame.add(this);
 
 
+		breathSearch = new LinkedList<Block>();
 		blocks = new ArrayList<Block>();
+		
 		intruderFound = false;
 		//updateDisplay();
 		createBlocks();
-		traverseMaze();
+
+		render();
+		
+
+	}
+	
+	private void render(){
+	System.out.println("In render");
+		
+	boolean running = true;
+	double timePerTick = 1000000000 / 2;
+	double delta = 0;
+	long now;
+	long lastTime = System.nanoTime();
+	long timer = 0;
+	int ticks = 0;
+	
+
+	while(running){
+			now = System.nanoTime();
+			delta += (now - lastTime) / timePerTick;
+			timer += now - lastTime;
+			lastTime = now;
+			
+			if(delta >= 1){
+				
+				if(breathSearch.peek() == null || intruderFound){
+					break;
+				}
+				
+				traverseMaze();
+				repaint();
+				
+				ticks++;
+				delta--;
+			}
+			
+			if(timer >= 1000000000){
+				System.out.println("Ticks and Frames: " + ticks);
+				ticks = 0;
+				timer = 0;
+			}
+			
+		}
+		System.out.println("Traverse Ended");
+		if(intruderFound){
+			JOptionPane.showMessageDialog(frame, "There IS an intruder!!!");
+		}else{
+			JOptionPane.showMessageDialog(frame, "No intruder detected.");
+		}
+	
 	}
 	
 	private void createBlocks(){
@@ -73,6 +129,9 @@ public class GameDriver extends JPanel {
 		blocks.add(blockArray[randX][randY]);
 		blockArray[randX][randY].setVisisted(true);
 		
+		breathSearch.add(blockArray[randX][randY]);
+		blockArray[randX][randY].setVisisted(true);
+		
 		//Create enemy
 		randX = rand.nextInt(numRows);
 		randY = rand.nextInt(numCols);
@@ -86,64 +145,54 @@ public class GameDriver extends JPanel {
 	}
 	
 	public void traverseMaze(){
-
-		Iterator<Block> it = blocks.iterator();
-		Block b = it.next();
-		
-		Queue<Block> breathSearch = new LinkedList<Block>();
-		breathSearch.add(b);
 		
 		
-		while(breathSearch.peek() != null){
-			
-			
+					
 			Block queueHead = breathSearch.poll();
 			
 			if(queueHead.getBlockType() == Block.Type.ENEMY){
 				intruderFound = true;
-				break;
 			}
 			
 			int xPos = queueHead.getxPos();
 			int yPos = queueHead.getyPos();
 			System.out.println("Checking " + xPos + " and " + yPos);
+			blocks.add(blockArray[xPos][yPos]);
 			//There are 4 possible moves: up, down, left, right
 			//Check above
 			if(yPos - 1 >= 0 && blockArray[xPos][yPos-1].getBlockType() != Block.Type.WALL && !blockArray[xPos][yPos-1].isVisisted()){
-				blocks.add(blockArray[xPos][yPos-1]);
 				breathSearch.add(blockArray[xPos][yPos-1]);
+				blockArray[xPos][yPos-1].setVisisted(true);
 			}
 			//Check below
 			if(yPos + 1 < numRows && blockArray[xPos][yPos+1].getBlockType() != Block.Type.WALL && !blockArray[xPos][yPos+1].isVisisted()){
-				blocks.add(blockArray[xPos][yPos+1]);
 				breathSearch.add(blockArray[xPos][yPos+1]);
+				blockArray[xPos][yPos+1].setVisisted(true);
+				
 			}
 			//Check left
 			if(xPos - 1 >= 0 && blockArray[xPos-1][yPos].getBlockType() != Block.Type.WALL && !blockArray[xPos-1][yPos].isVisisted()){
-				blocks.add(blockArray[xPos-1][yPos]);
 				breathSearch.add(blockArray[xPos-1][yPos]);
+				blockArray[xPos-1][yPos].setVisisted(true);
 			}
 			//Check right
 			if(xPos + 1 < numCols && blockArray[xPos+1][yPos].getBlockType() != Block.Type.WALL && !blockArray[xPos+1][yPos].isVisisted()){
-				blocks.add(blockArray[xPos+1][yPos]);
 				breathSearch.add(blockArray[xPos+1][yPos]);
+				blockArray[xPos+1][yPos].setVisisted(true);
 			}
-			queueHead.setVisisted(true);
-		}
-
-		repaint();
 		
 	}
 	
 	
 	public static void main(String[] args) {
-		frame = new JFrame("Maze Runner");
-		frame.add(new GameDriver());
+
+		new GameDriver();
+
 	}
 
 	
 	public void paint(Graphics g) {
-		
+		System.out.println("Painting...");
 		g.clearRect(0, 0, width, height);
 
 		for(int i = 0; i < numRows; i++){
@@ -176,16 +225,6 @@ public class GameDriver extends JPanel {
 			g.setColor(Color.cyan);
 			g.fillOval(b.getxPos()*colSize+colSize/2-15, b.getyPos()*rowSize+rowSize/2-15, 30, 30);
 			
-		}
-		
-		if(intruderFound){
-			g.setColor(Color.orange);
-			
-			g.drawString("There is an intruder!!", width/2, height/2);
-		}else{
-			g.setColor(Color.pink);
-			
-			g.drawString("There is NO intruder!!", width/2, height/2);
 		}
 		
 		
