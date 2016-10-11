@@ -4,7 +4,7 @@ public class Block {
 
 	private Type blockType;
 	private boolean visisted;
-	private int xPos, yPos;
+	private int rowPos, colPos;
 	
 	public enum Type{
 		OPEN, WALL, PLAYER, ENEMY;
@@ -13,8 +13,8 @@ public class Block {
 
 	public Block(Type blockType, int x, int y){
 		this.blockType = blockType;
-		xPos = x;
-		yPos = y;
+		rowPos = x;
+		colPos = y;
 		this.visisted = false;
 	}
 	
@@ -39,13 +39,13 @@ public class Block {
 	}
 
 
-	public int getxPos() {
-		return xPos;
+	public int getrowPos() {
+		return rowPos;
 	}
 
 
-	public int getyPos() {
-		return yPos;
+	public int getcolPos() {
+		return colPos;
 	}
 	
 	
