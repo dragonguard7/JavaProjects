@@ -26,7 +26,7 @@ public class Driver extends JPanel {
 	 * or solve a different puzzle
 	 */
 	public Driver(){
-		String file = Utils.loadFileAsString("res/game4-12x12.txt");
+		String file = Utils.loadFileAsString("res/game5-12x12.txt");
 		tokens = file.split("\\s+"); //Splits up every number into their own string separated by any white space
 		numCols = Utils.parseInt(tokens[0]);
 		numRows = Utils.parseInt(tokens[1]);
