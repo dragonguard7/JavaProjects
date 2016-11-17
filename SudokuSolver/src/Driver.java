@@ -20,14 +20,14 @@ public class Driver extends JPanel {
 	private ArrayList<Boxes> shaded;
 	private Queue<Boxes> search;
 	protected static String[] tokens;
-	private boolean searchDuplicates = false;
+	protected static boolean foundValue = true;
 	
 	/*
 	 * Change the path of the file to put a new game in
 	 * or solve a different puzzle
 	 */
 	public Driver(){
-		String file = Utils.loadFileAsString("res/easy-game1.txt");
+		String file = Utils.loadFileAsString("res/medium-game2.txt");
 		tokens = file.split("\\s+"); //Splits up every number into their own string separated by any white space
 		numRows = 9;
 		numCols = 9;
@@ -41,9 +41,8 @@ public class Driver extends JPanel {
 		shaded = new ArrayList<Boxes>();
 		
 		SearchingAlgorithm.setNumbers();
-		SearchingAlgorithm.searchPossibleValues();
-		//SearchingAlgorithm.searchNumber(1);
-		//solveSudoku();
+
+		solveSudoku();
 		
 	}
 	
@@ -58,41 +57,29 @@ public class Driver extends JPanel {
 	long timer = 0;
 	int ticks = 0;
 	
+	int counter = 0;
 
 	while(running){
 			now = System.nanoTime();
 			delta += (now - lastTime) / timePerTick;
 			timer += now - lastTime;
 			lastTime = now;
-			
+
 			if(delta >= 1){
 				
-				/*
-				 * I want to search until we run out of shaded
-				 * boxes, however there could still be duplicates
-				 * and we check it. I just do 1 pass, it can be
-				 * adjusted if desired but it will tell you if
-				 * there are more duplicates after doing it once.
-				 */
-				if(search.peek() == null){
-					/*
-					if(searchDuplicates){
-						
-						if(checkRemaining() == 0){
-							
-							break;
-						}else{
-							JOptionPane.showMessageDialog(frame, "More duplicates remaining", "Search Complete", JOptionPane.WARNING_MESSAGE);
-							break;
-						}
-					}else{
-						checkRemaining();
-					}
-					*/
+
+				if(foundValue){
+					foundValue = false;
+					SearchingAlgorithm.searchPossibleValues();
+
+					counter++;
+				}else{
 					JOptionPane.showMessageDialog(frame, "The search is completed.", "Search Complete", JOptionPane.PLAIN_MESSAGE);
+					break;
 				}
 				
-				findNext();
+				
+				//findNext();
 				repaint();
 				
 				ticks++;
@@ -106,48 +93,14 @@ public class Driver extends JPanel {
 			}		
 		}
 	}
-/*
- * This reads numbers from a file, the first two
- *  are the cols and rows respectively
- * 
- */
 
-/*
- * As of right now I just do a basic look for numbers between two
- * of the same numbers in both rows and columns.
- * Ill expand to triplets and two of the same numbers together with another in column/row
- */
-
-	
-	//Search a given column for a specified value excluding the position
-	private void searchColumn(int column, int value, int position){
-		
-		for(int k = 0; k < numCols; k++){
-			if(k != position && blockArray[k][column].getValue() == value){
-				shaded.add(blockArray[k][column]);
-				search.add(blockArray[k][column]);
-			}									
-		}
-	}
-	
-	//Search a given row for a specified value excluding the position
-	private void searchRow(int row, int value, int position){
-
-		for(int k = 0; k < numRows; k++){
-			if(k != position && blockArray[row][k].getValue() == value){
-				shaded.add(blockArray[row][k]);
-
-				search.add(blockArray[row][k]);
-			}	
-		}
-	}
-	
 /*
  * This is exected from the main loop if there are values in the search
  * arraylist. The shaded or bad value is given and it will look at each
  * surrounding value and find other shaded values by search the rows 
  * and columns for the number
  */
+	/*
 	public void findNext(){
 						
 			Boxes queueHead = search.poll();
@@ -186,7 +139,7 @@ public class Driver extends JPanel {
 			
 			
 	}
-	
+	*/
 	/*
 	 * This was added to complete puzzles that have isolated "white/open"
 	 * chucks since going by just shaded values won't find them. After

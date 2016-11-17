@@ -26,10 +26,23 @@ public class Boxes {
 	public int getValue() {
 		return value;
 	}
-	
-	public void completeBox(int value){
+	public void setValue(int value) {
 		this.possibleValues[0] = 0;
 		this.value = value;
+	}
+	
+	public void completeBox(){
+		System.out.print("There is only 1 possible value, lets set it. ");
+		
+		for(int k = 0; k < possibleValues.length; k++){
+			if(possibleValues[k] == 0){
+				System.out.println("Done. It's " + k);
+				this.possibleValues[0] = 0;
+				this.value = k;
+				return;
+			}
+		}
+		System.out.println("This is awkward... False positive?");
 	}
 
 	public void setStarter(boolean starter) {
@@ -58,7 +71,7 @@ public class Boxes {
 
 
 	public void removePossibleValue(int removeValue) {
-		this.possibleValues[removeValue] = 1;
+		this.possibleValues[removeValue] = 2;
 		this.possibleValues[0] -= 1;
 	}
 	
