@@ -32,13 +32,13 @@ public class Boxes {
 	}
 	
 	public void completeBox(){
-		System.out.print("There is only 1 possible value, lets set it. ");
-		
+		//System.out.print("There is only 1 possible value at: ");
+		//this.printPosition();
+		//this.printPossibleValues();
 		for(int k = 0; k < possibleValues.length; k++){
 			if(possibleValues[k] == 0){
-				System.out.println("Done. It's " + k);
-				this.possibleValues[0] = 0;
-				this.value = k;
+				//System.out.println(" it's " + k);
+				this.setValue(k);
 				return;
 			}
 		}
@@ -71,15 +71,19 @@ public class Boxes {
 
 
 	public void removePossibleValue(int removeValue) {
+		//System.out.print("Removing " + removeValue + " from ");
+		//this.printPosition();
+		//System.out.println("");
 		this.possibleValues[removeValue] = 2;
 		this.possibleValues[0] -= 1;
 	}
 	
 	public void printPosition(){
-		System.out.print("( " + colPos + " , " + rowPos + " ) ");
+		System.out.print("( " + (colPos+1) + " , " + (rowPos+1) + " ) ");
 	}
 	
 	public void printPossibleValues(){
+		this.printPosition();
 		for(int k = 0; k < possibleValues.length; k++){
 			
 			System.out.print(possibleValues[k] + " ");
