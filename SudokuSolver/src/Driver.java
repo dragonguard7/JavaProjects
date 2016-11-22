@@ -31,8 +31,8 @@ public class Driver extends JPanel {
 	public Driver(){
 		//String file = Utils.loadFileAsString("res/easy-game1.txt");
 		//String file = Utils.loadFileAsString("res/medium-game1.txt");
-		String file = Utils.loadFileAsString("res/hard-game3.txt");
-		//String file = Utils.loadFileAsString("res/extreme-game1.txt");
+		//String file = Utils.loadFileAsString("res/hard-game2.txt");
+		String file = Utils.loadFileAsString("res/extreme-game1.txt");
 		tokens = file.split("\\s+"); //Splits up every number into their own string separated by any white space
 		numRows = 9;
 		numCols = 9;
@@ -84,7 +84,7 @@ public class Driver extends JPanel {
 			
 				}else{
 					if(SearchingAlgorithm.validiateSolution()){
-						JOptionPane.showMessageDialog(frame, "The search is completed.", "Solution Complete", JOptionPane.PLAIN_MESSAGE);
+						JOptionPane.showMessageDialog(frame, "The search is completed and valid!.", "Solution Complete", JOptionPane.PLAIN_MESSAGE);
 						break;
 					}else{
 						printAllPossibleValues();
@@ -93,8 +93,6 @@ public class Driver extends JPanel {
 					}
 				}
 				
-				
-				//findNext();
 				repaint();
 				
 				ticks++;
@@ -133,8 +131,7 @@ public class Driver extends JPanel {
 		g.clearRect(0, 0, width, height);
 		g.setColor(Color.BLACK);
 		
-		int xOffset = 0;
-		int yOffset = 0;
+
 		int barSize = 6;
 		g.fillRect(colSize*3, 0, barSize ,height);
 		g.fillRect(colSize*6, 0, barSize ,height);
@@ -148,11 +145,31 @@ public class Driver extends JPanel {
 				//Draws the Grid			
 				g.drawRect(i * rowSize, j * colSize, rowSize, colSize);
 				
-				//Draws the number if not 0, if 0 just leaves box empty
+				//Draws the number if not 0, if 0 I'll print out all the possibilites
 				if(boxesArray[i][j].getValue() != 0){
+					g.setFont(new Font("TimesRoman", Font.BOLD, 20));
 					g.drawString( Integer.toString(boxesArray[i][j].getValue()), boxesArray[i][j].getcolPos()*colSize+colSize/2-6, boxesArray[i][j].getrowPos()*rowSize+rowSize/2+4);
 				}else{
-					g.drawString( " ", boxesArray[i][j].getcolPos()*colSize+colSize/2-6, boxesArray[i][j].getrowPos()*rowSize+rowSize/2+4);
+					
+					int xOffset = 10;
+					int yOffset = 0;
+					for(int k = 1; k < 10;k++){
+
+							if((k-1)%3 == 0){
+								xOffset = 10;
+								yOffset += 25;
+							}
+							if(boxesArray[i][j].getPossibleValues()[k] == 0){
+								g.setFont(new Font("TimesRoman", Font.PLAIN, 15));
+								g.setColor(Color.GRAY);
+								g.drawString( Integer.toString(k), boxesArray[i][j].getcolPos()*colSize+xOffset, boxesArray[i][j].getrowPos()*rowSize+yOffset);
+								g.setColor(Color.BLACK);
+							}
+							xOffset += colSize/3;
+
+						
+					}
+					
 
 				}
 				
@@ -166,19 +183,6 @@ public class Driver extends JPanel {
 			}	
 		}
 		
-		
-		//This draws the shaded parts, I could put it above
-		//but I wanted to use an iterator
-		Iterator<Boxes> it = shaded.iterator();
-		while(it.hasNext()){
-			
-			Boxes b = it.next();
-			g.setColor(Color.black);
-			g.fillRect(b.getcolPos()*colSize, b.getrowPos()*rowSize, colSize, rowSize/3);
-			g.fillRect(b.getcolPos()*colSize, b.getrowPos()*rowSize+2*rowSize/3+1, colSize, rowSize/3);
-			g.fillRect(b.getcolPos()*colSize, b.getrowPos()*rowSize, colSize/3, rowSize);
-			g.fillRect(b.getcolPos()*colSize+2*colSize/3+1, b.getrowPos()*rowSize, colSize/3, rowSize);
-		}
 	}
 	
 	
