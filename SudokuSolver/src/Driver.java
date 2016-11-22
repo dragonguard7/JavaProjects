@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 public class Driver extends JPanel {
 
 	protected static int numRows, numCols;
-	private int rowSize = 80, colSize = 80, width, height;
+	private int rowSize = 90, colSize = 90, width, height;
 	private Display display;
 	protected static Boxes boxesArray[][];
 	protected static Groups blockArray[];
@@ -30,8 +30,9 @@ public class Driver extends JPanel {
 	 */
 	public Driver(){
 		//String file = Utils.loadFileAsString("res/easy-game1.txt");
-		String file = Utils.loadFileAsString("res/medium-game1.txt");
-		//String file = Utils.loadFileAsString("res/hard-game1.txt");
+		//String file = Utils.loadFileAsString("res/medium-game1.txt");
+		String file = Utils.loadFileAsString("res/hard-game3.txt");
+		//String file = Utils.loadFileAsString("res/extreme-game1.txt");
 		tokens = file.split("\\s+"); //Splits up every number into their own string separated by any white space
 		numRows = 9;
 		numCols = 9;
@@ -48,7 +49,6 @@ public class Driver extends JPanel {
 		
 		SearchingAlgorithm.setNumbers();
 		SearchingAlgorithm.setGroupNumbers();
-
 		solveSudoku();
 		
 	}
@@ -78,6 +78,9 @@ public class Driver extends JPanel {
 					foundValue = false;
 					SearchingAlgorithm.searchPossibleValues();
 					SearchingAlgorithm.searchGroups();
+					SearchingAlgorithm.checkHiddenNumbers();
+					System.out.println("");
+					
 			
 				}else{
 					if(SearchingAlgorithm.validiateSolution()){
@@ -113,17 +116,19 @@ public class Driver extends JPanel {
 
 	}
 	
+	
 	public void printAllPossibleValues(){
 		System.out.println("");
-		for(int i = 0; i < numRows; i++){
-			for(int j = 0; j < numCols; j++){
-				if(boxesArray[i][j].getPossibleValues()[0] > 1)
-					boxesArray[i][j].printPossibleValues();
+		for(int i = 0; i < blockArray.length; i++){
+			for(int j = 0; j < blockArray[i].getGroup().length; j++){							
+					blockArray[i].getGroup()[j].printPossibleValues();								
 			}
 			System.out.println("");
 		}
 	}
 	
+	
+
 	public void paint(Graphics g) {
 		g.clearRect(0, 0, width, height);
 		g.setColor(Color.BLACK);

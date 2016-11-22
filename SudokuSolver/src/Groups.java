@@ -10,11 +10,11 @@ public class Groups {
 		setPossibleValues();
 	}
 
-	private void setPossibleValues(){
+	public void setPossibleValues(){
 		possibleValues[0] = 9;
 		for(int i = 0; i < group.length;i++){
 			if(group[i].getValue() != 0){
-			possibleValues[group[i].getValue()] = 1;
+			possibleValues[group[i].getValue()] = 2;
 			possibleValues[0] -= 1;
 			}		
 		}

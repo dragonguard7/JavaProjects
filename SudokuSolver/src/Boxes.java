@@ -32,12 +32,9 @@ public class Boxes {
 	}
 	
 	public void completeBox(){
-		//System.out.print("There is only 1 possible value at: ");
-		//this.printPosition();
-		//this.printPossibleValues();
+
 		for(int k = 0; k < possibleValues.length; k++){
 			if(possibleValues[k] == 0){
-				//System.out.println(" it's " + k);
 				this.setValue(k);
 				return;
 			}
@@ -71,11 +68,16 @@ public class Boxes {
 
 
 	public void removePossibleValue(int removeValue) {
-		//System.out.print("Removing " + removeValue + " from ");
-		//this.printPosition();
-		//System.out.println("");
-		this.possibleValues[removeValue] = 2;
-		this.possibleValues[0] -= 1;
+
+		if(this.possibleValues[removeValue] == 0){
+				this.possibleValues[removeValue] = 2;
+				this.possibleValues[0] -= 1;
+				if(this.possibleValues[0] == 1){
+					this.completeBox();
+				}
+		}else{
+			System.out.println("This value has already been removed");
+		}
 	}
 	
 	public void printPosition(){

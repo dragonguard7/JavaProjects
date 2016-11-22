@@ -19,6 +19,7 @@ public class SearchingAlgorithm {
 	
 	
 	protected static void searchPossibleValues(){
+		System.out.println("Searching 1-9 for each box");
 			
 		for(int i = 0; i < Driver.numRows; i++){
 
@@ -52,10 +53,7 @@ public class SearchingAlgorithm {
 				//Driver.blockArray[ULR+i][ULC+j].printPosition();
 				if(Driver.boxesArray[ULR+i][ULC+j].getValue() != 0 && box.getPossibleValues()[Driver.boxesArray[ULR+i][ULC+j].getValue()] == 0){
 					box.removePossibleValue(Driver.boxesArray[ULR+i][ULC+j].getValue());
-					Driver.foundValue = true;
-					if(box.getPossibleValues()[0] == 1){
-						box.completeBox();
-					}
+					Driver.foundValue = true;				
 				}
 			}
 		}
@@ -70,9 +68,7 @@ public class SearchingAlgorithm {
 			if(Driver.boxesArray[k][column].getValue() != 0 && box.getPossibleValues()[Driver.boxesArray[k][column].getValue()] == 0){
 				box.removePossibleValue(Driver.boxesArray[k][column].getValue());
 				Driver.foundValue = true;
-				if(box.getPossibleValues()[0] == 1){
-					box.completeBox();
-				}
+				
 			}									
 		}
 	}
@@ -85,9 +81,6 @@ public class SearchingAlgorithm {
 			if(box.getPossibleValues()[Driver.boxesArray[row][k].getValue()] == 0 && Driver.boxesArray[row][k].getValue() != 0){
 				box.removePossibleValue(Driver.boxesArray[row][k].getValue());
 				Driver.foundValue = true;
-				if(box.getPossibleValues()[0] == 1){
-					box.completeBox();
-				}
 			}	
 		}
 	}
@@ -103,14 +96,12 @@ public class SearchingAlgorithm {
 			int COS = (i%3); //Column offset
 			//These 2 for loop will create the block
 			Boxes[] block = new Boxes[9];
-			//System.out.println("Group: " + i + " Row OS: " + ROS + " Col OS " + COS);
 			
 			for(int j = 0; j < 9; j++){
 				block[j] = Driver.boxesArray[(j/3)+(ROS*3)][(j%3)+(COS*3)];
 			}
 			Driver.blockArray[i] = new Groups(block);
-			//Driver.blockArray[i].printGroup();
-			//Driver.blockArray[i].printPossibleValues();
+
 		}
 		
 		//This does row groups	
@@ -122,8 +113,7 @@ public class SearchingAlgorithm {
 				block[j] = Driver.boxesArray[i][j];
 			}
 			Driver.rowArray[i] = new Groups(block);
-			//Driver.rowArray[i].printGroup();
-			//Driver.rowArray[i].printPossibleValues();
+
 		}
 		
 		//This does column groups
@@ -135,22 +125,23 @@ public class SearchingAlgorithm {
 				block[j] = Driver.boxesArray[j][i];
 			}
 			Driver.columnArray[i] = new Groups(block);
-			//Driver.columnArray[i].printGroup();
-			//Driver.columnArray[i].printPossibleValues();
+			
 		}	
 		
 		
 	}
 	
-	protected static void searchGroups(){
-		//searchBlock(Driver.blockArray[1]);
+	protected static void searchGroups(){	
+		System.out.println("Searching groups (row,columns,blocks)");
+		//Update the group positions then search
 		for(int i = 0; i < Driver.blockArray.length; i++){
-			//System.out.println("Checking block: " + i );
+			Driver.blockArray[i].setPossibleValues();
+			Driver.rowArray[i].setPossibleValues();
+			Driver.columnArray[i].setPossibleValues();
 			searchBlock(Driver.blockArray[i]);
-			searchBlock(Driver.rowArray[i]);
-			searchBlock(Driver.columnArray[i]);
+
 		}
-		
+	
 		
 		
 	}
@@ -159,6 +150,12 @@ public class SearchingAlgorithm {
 	private static void searchBlock(Groups block){
 		//Lets find a number we can look at.
 		for(int i = 1; i < 10; i++){
+			//System.out.println("Looking for " + i);
+			
+			if(block.getPossibleValues()[i] == 2){
+				//System.out.println("The value already exists in the block");
+				continue;
+			}
 
 				/* We are going to use these to keep track of the spots
 				 * we will go through all the boxes in the block and if
@@ -173,30 +170,16 @@ public class SearchingAlgorithm {
 				//To go through all the boxes
 				Boxes[] boxes = block.getGroup();
 				for(int j = 0; j < 9; j++){	
-					//If something can go there and the value isnt in row or column
-					//boxes[j].printPosition();
-					//boxes[j].printPossibleValues();
-					//System.out.print(boxes[j].getPossibleValues()[i]);
-					if(boxes[j].getValue() == i){
-						counter = 0;
-						break;
-					}
-					if(boxes[j].getPossibleValues()[i] == 0 && boxes[j].getPossibleValues()[0] != 0){
-						//System.out.print(i + " can go ");
-						//boxes[j].printPosition();
+
+					if(Driver.rowArray[boxes[j].getrowPos()].getPossibleValues()[i] == 0 && Driver.columnArray[boxes[j].getcolPos()].getPossibleValues()[i] == 0 && boxes[j].getPossibleValues()[0] != 0){
 						row = boxes[j].getrowPos();
 						column = boxes[j].getcolPos();
 						counter++;
-						//System.out.println("");
 					}
 					
 				}
 				
 				if(counter == 1){
-					//System.out.print("There is only 1 possibility for " + i+ " at: " );
-					//Driver.boxesArray[row][column].printPosition();
-					//Driver.boxesArray[row][column].printPossibleValues();
-					//System.out.println("");
 					Driver.boxesArray[row][column].setValue(i);
 					Driver.foundValue = true;
 				}
@@ -206,8 +189,7 @@ public class SearchingAlgorithm {
 	}
 	
 	protected static boolean validiateSolution(){
-		//Check blocks
-		
+
 		//Check rows
 		for(int i = 0; i < 9;i++){ //row
 			for(int j = 0; j < 9; j++){ // column
@@ -256,5 +238,96 @@ public class SearchingAlgorithm {
 		
 		return true;
 	}
+	
+//********************************************Checking group numbers **********************************************************
+
+	protected static void checkHiddenNumbers(){
+		System.out.println("Checking hidden numbers");
+		for(int i = 0; i < Driver.blockArray.length; i++){
+
+			checkGroupNumber(Driver.blockArray[i],i);
+
+		}
+	}
+	
+	private static void checkGroupNumber(Groups group, int blockNumber){
+		//Update the group possible values 
+		group.setPossibleValues();
+		
+		//Go through 1-9
+		for(int i = 1; i < group.getPossibleValues().length;i++){
+			//If its open, lets look at the group for it
+			if(group.getPossibleValues()[i] == 0){
+				//Go through the group
+				for(int j = 0; j < group.getGroup().length;j++){
+				
+					int boxValue = group.getGroup()[j].getValue(); //0 if boxValue is open
+					int possibleValue = group.getGroup()[j].getPossibleValues()[i]; //0 if possible value is open
+					
+					//Find first open box and open value
+					if(boxValue == 0 && possibleValue == 0){
+						boolean sameRow = true, sameColumn = true, rowIsValid = false, columnIsValid = false;
+						int row = group.getGroup()[j].getrowPos(), column = group.getGroup()[j].getcolPos();
+						
+						//Lets go through the rest
+						for(int k = j+1; k < group.getGroup().length;k++){
+							int nextBoxValue = group.getGroup()[k].getValue();
+							int nextPossibleValue = group.getGroup()[k].getPossibleValues()[i];
+							
+							//if the box is open and the value is open
+							if(nextBoxValue == 0 && nextPossibleValue == 0){
+								if(group.getGroup()[k].getrowPos() != row){ sameRow = false;}else{rowIsValid = true;}
+								if(group.getGroup()[k].getcolPos() != column){ sameColumn = false;}else{columnIsValid = true;}
+							}
+							
+							j=k; //Update the position 
+						}
+						
+						if(sameRow && rowIsValid){
+							updateRow(row, blockNumber, i);
+						}
+						if(sameColumn && columnIsValid){
+							updateColumn(column, blockNumber, i);
+						}
+			
+					}//End boxValue if
+					
+				}
+				
+				
+			}
+		}
+
+	}
+	
+	private static void updateRow(int row, int block, int value){
+		//Calculate the values we want to omit
+		int low = (block%3) * 3;
+		int high = (block%3) * 3 + 3;
+		for(int i = 0; i < Driver.rowArray.length;i++){ 
+			if( i < low || i >= high){
+				if(Driver.rowArray[row].getGroup()[i].getPossibleValues()[value] == 0 && Driver.rowArray[row].getGroup()[i].getPossibleValues()[0] != 0){
+					Driver.rowArray[row].getGroup()[i].removePossibleValue(value);
+					Driver.foundValue = true;
+				}
+			}
+		}
+	}
+	
+	private static void updateColumn(int column, int block, int value){
+		int low = (block/3) * 3;
+		int high = (block/3) * 3 + 3;
+		for(int i = 0; i < Driver.columnArray.length;i++){
+			if( !(i >=low && i< high)){
+				if(Driver.columnArray[column].getGroup()[i].getPossibleValues()[value] == 0 & Driver.columnArray[column].getGroup()[i].getPossibleValues()[0] != 0){
+					Driver.columnArray[column].getGroup()[i].removePossibleValue(value);
+					Driver.foundValue = true;
+				}
+			}
+		}
+		
+	}
+	
+	
 	
 }
